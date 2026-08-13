@@ -1,429 +1,341 @@
-# ICT-Innovation-Project-Competition
+# **3D Learning Atlas**
 
-# 🍑 ICT 혁신 프로젝트 경진대회 – AI 학습 플랫폼
+### AI 융합형 중·고등 3D 학습 플랫폼 — ICT 통합 설계 경진대회 제출작 (팀 코드톡톡)
 
-> 3D 모델 기반 과학 학습 + 나만의 AI 노트 + 챗봇 피드백 시스템
+3D 모델로 과학 개념을 학습하고, AI 챗봇에 질문하며, 북마크와 질문 기록을 바탕으로 **나만의 복습 노트를 AI와 함께 정리**하는 통합 학습 플랫폼입니다.
 
----
+![HTML](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=flat&logo=express&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat&logo=sqlite&logoColor=white)
 
-## 📌 목차
-
-1. [프로젝트 개요](#1-프로젝트-개요)
-2. [시스템 아키텍처](#2-시스템-아키텍처)
-3. [사용 기술 및 선택 이유](#3-사용-기술-및-선택-이유)
-4. [AI 노트 시스템 설계](#4-ai-노트-시스템-설계)
-5. [폴더 구조](#5-폴더-구조)
-6. [설치 및 실행 방법](#6-설치-및-실행-방법)
-7. [API 명세](#7-api-명세)
-8. [데이터베이스 스키마](#8-데이터베이스-스키마)
-9. [환경 변수](#9-환경-변수)
-10. [트러블슈팅](#10-트러블슈팅)
+🔗 **소스코드** : https://github.com/Sanduduck/ICT-Innovation-Project-Competition
 
 ---
 
-## 1. 프로젝트 개요
+## 📌 프로젝트 소개
 
-중고등학생이 3D 모델을 보며 과학 개념을 학습하고, AI 챗봇에 질문하며, 자신만의 학습 노트를 AI와 함께 정리하는 플랫폼입니다.
+* 중·고등학생이 **평면 그림만으로 이해하기 어려운 개념**(세포 구조, 분자 결합, 지각판, 천체 운동, 입체도형 등)을 3D 모델로 직접 조작하며 학습하는 웹 플랫폼입니다.
+* 핵심 문제의식은 **"학생이 실제로 개념을 이해하고 있는가?"**. 초기엔 3D 모델 카탈로그만 구상했지만, 학생은 *자료를 보는 것*에서 끝나지 않고 *질문하고 → 저장하고 → 복습 정리*한다는 점에 주목해, 이 전체 흐름을 하나의 플랫폼으로 연결했습니다.
+* **배경 근거:** 선행 연구에 따르면 3D·애니메이션 기반 학습은 2D 대비 흥미 지표가 높고(첫 수업 직후 약 +10%p), 전체 통과율도 73% → 87%로 개선되는 것으로 보고됩니다. 이를 근거로 3D 시각화 + AI 학습 보조를 결합했습니다.
+* **설계 철학: "AI는 초안, 학습은 학습자."** AI가 완성 답안을 대신 쓰는 게 아니라, 학생이 수정·보완하는 1차 초안을 제공합니다.
 
-### 주요 기능
+---
+
+## 📖 목차
+
+1. [팀 구성 & 역할](#-팀-구성--역할)
+2. [사용 기술](#️-사용-기술)
+3. [주요 기능](#-주요-기능)
+4. [🧠 기술적 의사결정](#-기술적-의사결정-technical-decisions) ← *왜 이 기술을 선택했는가 (6건)*
+5. [시스템 구조](#-시스템-구조)
+6. [API 명세](#-api-명세)
+7. [데이터베이스 스키마](#️-데이터베이스-스키마)
+8. [설치 및 실행](#-설치-및-실행)
+9. [트러블슈팅](#-트러블슈팅)
+
+---
+
+## 👥 팀 구성 & 역할
+
+| 이름 | 역할 |
+| --- | --- |
+| **박동진 (팀장)** | 프론트엔드 · 백엔드 · AI · 보안 — 기술 설계 총괄 및 전반 구현 |
+| **박지호** | 프론트엔드 · 백엔드 · AI |
+| **김준영** | 백엔드 · 하드웨어 · 보고서 |
+| **오유진** | 백엔드 · AI · 발표 자료 |
+| **이찬** | 프론트엔드 · 발표 자료 |
+
+---
+
+## 🛠️ 사용 기술
+
+**Frontend** — HTML / CSS / Vanilla JavaScript (별도 빌드 과정 없이 실행)
+**Backend** — Node.js + Express (인증·모델·북마크·노트·대시보드 API), axios
+**AI 서버** — Python + FastAPI / Uvicorn
+* **의미 검색** — Sentence-Transformers (KoSimCSE) + FAISS 벡터 검색
+* **챗봇** — Qwen2.5-0.5B-Instruct (로컬 경량 LLM)
+* **피드백** — Anthropic Claude (Sonnet: 심층 피드백 / Haiku: 챗봇 폴백)
+
+**Database** — SQLite3 (사용자·북마크·노트·챗봇 로그) + JSON (3D 모델 메타데이터)
+**보안** — bcryptjs 해시, 쿠키 기반 세션, 역할 기반 접근 제어(RBAC)
+
+---
+
+## 🎯 주요 기능
 
 | 기능 | 설명 |
-|------|------|
-| **3D 모델 탐색** | Sketchfab 임베드로 과학 개념 3D 시각화 |
-| **AI 챗봇** | 과목별 학습 질문에 AI가 답변 (퀴즈 모드 지원) |
-| **북마크** | 관심 있는 3D 모델 저장 |
-| **AI 노트 만들기** | 북마크 + 챗봇 질문 기반 학습 노트 자동 생성 |
-| **AI 심층 피드백** | 노트 품질 + 학습 패턴 5차원 분석 피드백 |
-| **관리자/교사 페이지** | 모델 업로드, 사용자 관리 |
+| --- | --- |
+| **3D 모델 탐색** | Sketchfab 임베드로 과목별 과학 개념 3D 시각화 |
+| **하이브리드 검색** | 문자열 검색 + FAISS 의미 검색 — "세포에서 에너지를 만드는 구조" 같은 문장으로도 탐색 |
+| **AI 챗봇** | 중·고등 수준 개념 설명·예시·퀴즈 (과목 맥락 유지) |
+| **AI 노트 생성** | 북마크 + 챗봇 질문 기록을 묶어 복습용 1차 노트 초안 자동 생성 |
+| **AI 심층 피드백** | 노트 품질 등급(F~S) + 학습 패턴 5차원 분석 |
+| **교사 대시보드** | 질문·북마크·노트 수 기반 단원별 관심도·약점 시각화 |
+| **관리자 페이지** | 3D 모델 등록·삭제·정렬 (드래그앤드롭) |
 
 ---
 
-## 2. 시스템 아키텍처
+## 🧠 기술적 의사결정 (Technical Decisions)
+
+단순히 "무엇을 썼는가"보다 **왜 그것을 선택했는가**를 기록합니다. 각 항목은 실제 겪은 문제·팀 논의·성능 제약을 근거로 결정되었습니다.
+
+<details>
+<summary><b>1. 웹 서버와 AI 서버를 왜 분리했는가 (Node.js ↔ Python)</b></summary>
+
+<br>
+
+**문제**
+AI 기능(문장 임베딩, LLM 추론)은 Python 생태계에 강점이 있고, 웹 서버는 비동기 I/O에 강한 Node.js가 적합했습니다. 이 둘을 한 서버에 묶으면, 무겁고 느린 AI 연산이 이벤트 루프를 점유해 **기본적인 검색·북마크 요청까지 지연**될 위험이 있었습니다.
+
+**선택한 구조**
+역할을 두 서버로 분리하고 REST API로 연동했습니다.
+* **Node.js Express** — 인증, 3D 모델 관리, 북마크, 노트, 대시보드 API
+* **Python FastAPI** — AI 의미 검색, 챗봇 응답 생성
+
+**결과 / 트레이드오프**
+AI 서버가 일시적으로 지연되거나 죽어도, **모델 검색·북마크·마이페이지 같은 기본 기능은 그대로 유지**되도록 설계했습니다. 대신 서버 2개를 운영하는 복잡도와 서버 간 통신 설계 비용이 늘었습니다.
+
+</details>
+
+<details>
+<summary><b>2. 챗봇 모델을 왜 Qwen과 Claude로 나눴는가</b></summary>
+
+<br>
+
+**문제**
+학교 PC처럼 **GPU 없는 환경에서도 로컬 실행 가능한 경량 LLM**이 필요했습니다. 그래서 CPU로 돌아가는 Qwen2.5-0.5B를 도입했는데, 소형 모델이라 **복잡한 JSON 구조화 지시(5차원 피드백 형식)를 제대로 따르지 못하는** 한계가 있었습니다.
+
+**검토·선택 — 작업별 모델 분리**
+
+| 작업 | 모델 | 이유 |
+| --- | --- | --- |
+| 단순 챗봇 질의응답 | **Qwen2.5-0.5B** | CPU 로컬 실행, 무료, 단순 설명엔 충분 |
+| 5차원 심층 피드백 | **Claude Sonnet** | 엄격한 JSON + Chain-of-Thought 지시 이행 필요 |
+| 챗봇 폴백 | **Claude Haiku** | Qwen 실패 시, 빠르고 저렴한 대체 |
+
+**결과 / 트레이드오프**
+"모든 걸 큰 모델로"도, "모든 걸 로컬로"도 아닌, **작업 성격에 맞춰 비용·성능·지시이행 능력을 배분**했습니다. 심층 피드백은 외부 API 비용이 들지만, 그 품질이 필요한 기능에만 한정했습니다.
+
+</details>
+
+<details>
+<summary><b>3. 검색 — 왜 문자열 검색만으로는 부족했는가 (하이브리드 검색)</b></summary>
+
+<br>
+
+**문제**
+키워드 검색은 학습자가 **정확한 교과 용어를 알아야만** 자료를 찾을 수 있습니다. "미토콘드리아"라는 단어를 모르는 학생이 *"세포에서 에너지를 만드는 구조"* 라고 검색하면 아무것도 안 나오는 문제가 있었습니다.
+
+**팀 논의 (2026.04.27 회의)**
+문자열 검색과 Sentence-BERT 기반 의미 검색을 비교했습니다.
+* 문자열 검색 — 빠르지만 표현이 조금만 달라져도 정확도 급락
+* 의미 검색 — 유사 개념 탐색 가능, 교육 플랫폼에 더 적합
+* **이견:** 일부 팀원이 *"의미 검색이 서버 성능과 구현 난도를 높인다"* 고 우려했으나, 사용자 경험 향상을 위해 도입이 필요하다는 의견이 우세해 채택했습니다.
+
+**선택 — 둘 다**
+문자열 검색으로 명확한 키워드 일치를 빠르게 잡고, FAISS 의미 검색으로 개념 간 연관성을 보완했습니다. 사용자는 상단 "AI 검색" 토글로 사용 여부를 직접 선택할 수 있습니다.
+
+**결과 / 트레이드오프**
+현재 데이터 규모(100건 이하)에서는 단순 FAISS 인덱스로 충분히 빠릅니다. 규모가 커지면 더 큰 벡터 검색에 맞는 인덱스로 확장이 필요합니다.
+
+</details>
+
+<details>
+<summary><b>4. AI 장애에 어떻게 대비했는가 (다단계 폴백)</b></summary>
+
+<br>
+
+**문제**
+AI 챗봇·피드백이 핵심 기능이지만, **AI 서버나 외부 API가 죽으면 서비스 전체가 멈출** 위험이 있었습니다.
+
+**선택 — 기능별 폴백 체인**
+* **챗봇** — Qwen(로컬) 실패 → Claude Haiku 자동 전환 → 그것도 실패 시 오류 안내
+* **피드백** — Claude 실패 → Qwen → **로컬 규칙 기반 계산**(노트 글자 수·챗봇 패턴으로 등급·점수 산출)
+* **노트 생성** — AI 실패 → 북마크 제목·설명 기반 **템플릿 초안** 제공
+
+**결과 / 트레이드오프**
+테스트 항목에 *"AI 서버 장애 대응"*을 별도로 넣어, **AI 없이도 기본 학습 흐름이 유지되는지** 검증했습니다. 폴백 계층이 늘어난 만큼 로직 복잡도는 커졌지만, 데모·시연 중 AI 장애로 전체가 멈추는 최악을 방지했습니다.
+
+</details>
+
+<details>
+<summary><b>5. 동시 AI 요청을 어떻게 감당했는가 (Redis 없는 트래픽 대응 레이어)</b></summary>
+
+<br>
+
+**문제**
+AI 호출은 **느리고 비싸며**, 다수 사용자가 동시에 요청을 보내면 AI 서버가 과부하로 죽거나 API 비용이 폭증할 수 있었습니다. 경진대회 데모라 Redis 같은 외부 인프라는 부담이었습니다.
+
+**선택 — 인메모리 자체 구현 5종**
+
+| 장치 | 역할 | 선택 이유 |
+| --- | --- | --- |
+| **LRU 캐시** | 동일 요청 반복 시 AI 호출 없이 즉시 반환 (TTL 10분) | Redis 없이 인메모리로 |
+| **Rate Limiter** | 사용자당 분당 5회 제한 | **슬라이딩 윈도우** — 고정 윈도우의 경계 취약점 회피 |
+| **Semaphore** | AI 동시 요청 3개로 제한 | 초과분은 대기열로 순차 처리 |
+| **Circuit Breaker** | 연속 5회 실패 시 60초 차단 | 장애 전파 방지 + 자동 복구 |
+| **DB Job Queue** | Rate Limit 초과 요청을 DB에 저장 후 처리 | 서버 재시작 후에도 작업 유지 |
+
+**결과 / 트레이드오프**
+외부 캐시·큐 인프라 없이 **애플리케이션 레벨에서 트래픽을 보호**했습니다. 대규모 분산 환경에선 Redis 등으로 이관이 필요하지만, 단일 서버 데모 규모에는 과하지 않게 맞췄습니다.
+
+</details>
+
+<details>
+<summary><b>6. 데이터 저장 — 왜 SQLite인가, 그리고 왜 WAL을 안 썼는가</b></summary>
+
+<br>
+
+**문제**
+경진대회 특성상 **배포·데모가 간편**해야 했습니다. 별도 DB 서버를 구동·운영하는 부담을 피하고 싶었습니다.
+
+**선택**
+* **SQLite** — 파일 하나(`data/app.db`)로 동작. 쿼리는 `?` 파라미터 방식으로 통일해 향후 **PostgreSQL 이관도 용이**하도록 작성.
+* **3D 모델 메타데이터는 JSON**(`data/models.json`)으로 분리해 관리자 페이지에서 바로 편집.
+
+**겪은 문제 — WAL 모드 미사용**
+성능을 위해 SQLite의 WAL 모드를 켰더니, **Windows에서 `-wal`·`-shm` 파일이 추가로 생성돼 DB 파일을 복사·이동할 때 문제**가 발생했습니다. 데모 환경에서 DB를 통째로 옮겨야 하는 경우가 많아, 기본 DELETE 모드로 되돌렸습니다.
+
+**결과 / 트레이드오프**
+DB 서버 없이 **즉시 실행·복사 가능한 단순함**을 확보했습니다. 대신 대규모 동시 쓰기가 필요한 실서비스 단계에서는 RDS 등으로의 확장이 필요합니다.
+
+</details>
+
+---
+
+## 🧩 시스템 구조
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        클라이언트 (브라우저)                      │
-│              HTML / CSS / Vanilla JS                         │
-└───────────────────────────┬─────────────────────────────────┘
-                            │ HTTP (포트 3000)
-┌───────────────────────────▼─────────────────────────────────┐
-│                   Express.js 서버 (Node.js)                   │
-│                                                               │
-│   routes/aiNotes.js   →  aiNoteService.js                    │
-│   index.js (챗봇 API)  →  callPythonChat() / callAnthropic() │
-│                                                               │
-│   ┌─────────────────┐    ┌──────────────────────────────┐   │
-│   │  SQLite DB      │    │  대규모 트래픽 대응 레이어        │   │
-│   │  data/app.db    │    │  LRU캐시 / Rate-limit /       │   │
-│   └─────────────────┘    │  Semaphore / Circuit-Breaker  │   │
-│                           │  / Job Queue                  │   │
-│                           └──────────────────────────────┘   │
-└──────────────┬────────────────────────┬────────────────────┘
-               │ HTTP (포트 8000)        │ HTTPS
-┌──────────────▼───────────┐  ┌─────────▼────────────────────┐
-│  Python AI 서버           │  │  Anthropic API               │
-│  (FastAPI + Uvicorn)     │  │  claude-sonnet (피드백 전용)   │
-│                          │  │  claude-haiku  (챗봇 폴백)    │
-│  · KoSimCSE (임베딩)      │  └──────────────────────────────┘
-│  · FAISS (벡터 검색)      │
-│  · Qwen 0.5B (챗봇)      │
+┌─────────────────────────────────────────────────────────┐
+│                   클라이언트 (브라우저)                      │
+│               HTML / CSS / Vanilla JS                    │
+└──────────────────────────┬──────────────────────────────┘
+                           │ HTTP (:3000)
+┌──────────────────────────▼──────────────────────────────┐
+│                Express 서버 (Node.js)                     │
+│   인증 · 모델 · 북마크 · 노트 · 대시보드 API               │
+│   ┌─────────────┐   ┌──────────────────────────────┐     │
+│   │ SQLite      │   │  트래픽 대응 레이어             │     │
+│   │ app.db      │   │  LRU / Rate-limit / Semaphore │     │
+│   └─────────────┘   │  / Circuit-Breaker / Job Queue│     │
+│                     └──────────────────────────────┘     │
+└───────────┬───────────────────────────┬─────────────────┘
+            │ HTTP (:8000)              │ HTTPS
+┌───────────▼──────────────┐  ┌─────────▼───────────────────┐
+│  Python AI 서버 (FastAPI) │  │  Anthropic API              │
+│  · KoSimCSE (임베딩)      │  │  Claude Sonnet (심층 피드백) │
+│  · FAISS (벡터 검색)      │  │  Claude Haiku  (챗봇 폴백)   │
+│  · Qwen 0.5B (챗봇)       │  └─────────────────────────────┘
 └──────────────────────────┘
-```
 
-### 챗봇 요청 흐름
-```
-사용자 질문
-    ↓
-Python AI 서버 (Qwen 0.5B)
-    ↓ 실패 (서버 꺼짐 / 5xx / 타임아웃)
-Anthropic API (claude-haiku) ← 자동 폴백
-    ↓ 실패
-오류 메시지 반환
-```
-
-### 피드백 요청 흐름
-```
-피드백 버튼 클릭
-    ↓
-1시간 이내 캐시 확인 → (HIT) 즉시 반환
-    ↓ (MISS)
-DB 병렬 조회 (챗봇 이력 60개 + 노트 목록)
-    ↓
-analyzeNoteDepth()   → 노트 품질 등급(F~S) + 점수 상한
-analyzeChatPattern() → 반복 키워드 + 약점 후보 + 관심 분야
-    ↓
-Anthropic API (claude-sonnet) — Chain-of-Thought 프롬프트
-    ↓ 실패
-Python AI (Qwen)
-    ↓ 실패
-로컬 fallback (규칙 기반 계산)
-    ↓
-점수 상한 강제 적용 → DB 저장 → 클라이언트 반환
+── 챗봇 폴백:  Qwen 실패 → Claude Haiku → 오류 안내
+── 피드백 폴백: 캐시 HIT 즉시반환 → Claude → Qwen → 로컬 규칙 계산
 ```
 
 ---
 
-## 3. 사용 기술 및 선택 이유
+## 📡 API 명세
 
-### Backend
+```
+# 인증
+POST /api/auth/register        회원가입
+POST /api/auth/login           로그인 (쿠키 발급)
+POST /api/auth/logout          로그아웃
+GET  /api/auth/whoami          현재 로그인 사용자
 
-#### Node.js + Express.js
-- **선택 이유**: 비동기 I/O 처리에 특화. 다수의 사용자가 동시에 AI 요청을 보낼 때 이벤트 루프 기반으로 효율적으로 처리. 단일 스레드이지만 AI 호출·DB 쿼리 등 I/O 대기 시간을 블로킹하지 않아 대규모 트래픽에 적합.
-- **역할**: REST API 서버, 인증, 파일 업로드, DB 연동, AI 서버 프록시
+# 챗봇
+POST /api/chat                 { message, subject, withQuiz } → { answer, model }
 
-#### SQLite (sqlite3)
-- **선택 이유**: 별도의 DB 서버 설치 없이 파일 하나(`data/app.db`)로 동작. 경진대회 특성상 배포·데모가 간편해야 하므로 선택. `?` 파라미터 방식으로 통일해 나중에 PostgreSQL 마이그레이션도 용이.
-- **WAL 모드 미사용**: Windows에서 `-wal`, `-shm` 파일이 추가 생성되어 DB 복사 시 문제가 생기므로 기본 DELETE 모드 사용.
+# AI 노트
+POST /api/notes/generate       AI 노트 즉시 생성
+POST /api/notes/generate/async 큐 등록 후 jobId 반환
+GET  /api/notes/jobs/:jobId    작업 상태 폴링
+POST /api/notes/:id/feedback   AI 심층 피드백 생성
 
-#### axios
-- **선택 이유**: Python AI 서버(8000번)와 Anthropic API 양쪽에 동일한 라이브러리 사용. timeout, 에러 처리가 일관성 있게 관리됨.
+# 노트 CRUD
+GET/POST/PUT/DELETE /api/notes[/:id]
 
-#### bcryptjs
-- **선택 이유**: 비밀번호 평문 저장 방지. salt+hash 방식으로 저장. bcrypt는 의도적으로 느리게 설계되어 무차별 대입 공격(brute-force)에 강함.
-
-#### multer + sharp
-- **선택 이유**: 3D 모델 썸네일 업로드(multer)와 WebP 변환·리사이징(sharp)을 파이프라인으로 연결해 이미지 최적화.
-
----
-
-### Python AI 서버
-
-#### FastAPI + Uvicorn
-- **선택 이유**: Flask보다 비동기 처리 성능이 뛰어남. Pydantic 기반 요청 검증 자동화. `/docs`에서 Swagger UI 자동 생성으로 테스트 편리.
-- **reload=False 이유**: Windows에서 `reload=True`는 멀티프로세스 방식이 필요한데, Node.js 자식 프로세스로 실행 시 즉시 종료되는 문제 발생.
-
-#### Sentence Transformers (KoSimCSE)
-- **선택 이유**: 한국어 문장 임베딩 특화 모델. "빛의 굴절" 검색 시 "광학 현상"이 담긴 모델도 찾아주는 **의미 기반 검색** 구현.
-- **fallback**: 로드 실패 시 `all-MiniLM-L6-v2`(영어 범용)로 자동 전환.
-
-#### FAISS (Facebook AI Similarity Search)
-- **선택 이유**: 수백~수천 개 3D 모델 벡터 중 가장 유사한 것을 밀리초 단위 검색. SQL LIKE 검색보다 의미적 유사도 기반 검색 가능.
-- **IndexFlatIP**: 코사인 유사도(벡터 정규화 후 내적) 방식. 작은 규모에서 정확도 최우선.
-
-#### Qwen 2.5 0.5B Instruct
-- **선택 이유**: GPU 없는 환경에서도 CPU로 로컬 실행 가능한 경량 LLM. 단순 학습 질문 답변에 충분한 성능.
-- **한계**: 복잡한 JSON 구조화 지시를 따르지 못하는 경우가 있어, 피드백 생성은 Anthropic API를 우선 사용.
-
----
-
-### AI 피드백 시스템
-
-#### Anthropic API (Claude Sonnet / Haiku)
-- **피드백에 Sonnet 사용**: 5차원 분석 + Chain-of-Thought + 엄격한 JSON 출력 규칙을 동시에 따르려면 지시 이행 능력이 높은 모델 필요.
-- **챗봇 폴백에 Haiku 사용**: 단순 질문 답변에는 Haiku로 충분하고 응답이 빠르며 비용이 낮음.
-- **System/User 프롬프트 분리**: AI가 역할(System)과 데이터(User)를 명확히 구분하도록 해 지시 이행률 향상.
-
-#### Chain-of-Thought 프롬프트 기법
-- **적용 이유**: 단순 "피드백 줘"보다, 노트 등급·챗봇 패턴·누락 개념을 수치화해 구조적으로 제공하면 AI가 단계적으로 추론하며 더 구체적인 피드백 생성.
-
----
-
-### 대규모 트래픽 대응
-
-#### LRU 캐시 (자체 구현)
-- Redis 없이 인메모리 캐싱. 동일 북마크 조합 반복 요청 시 AI 호출 없이 즉시 반환. TTL 10분.
-
-#### Rate Limiter (슬라이딩 윈도우)
-- 사용자당 분당 5회 제한. 고정 윈도우 대비 경계 취약점 없음.
-
-#### Semaphore
-- AI 서버 동시 요청을 3개로 제한. 초과 요청은 대기열에서 순차 처리.
-
-#### Circuit Breaker
-- 연속 5회 실패 시 60초간 AI 서버 요청 차단. 장애 전파 방지 및 자동 복구.
-
-#### DB 기반 Job Queue
-- Rate Limit 초과 시 DB에 저장 후 처리. 서버 재시작 후에도 작업 유지.
-
----
-
-## 4. AI 노트 시스템 설계
-
-### 노트 품질 등급 시스템
-
-| 등급 | 글자 수 | 설명 | 최대 점수 |
-|------|---------|------|---------|
-| F | ~19자 | 내용 없음 수준 | 15점 |
-| D | 20~79자 | 단편적 메모 수준 | 30점 |
-| C | 80~199자 | 기초 정리 수준 | 50점 |
-| B | 200~499자 | 보통 학습 수준 | 75점 |
-| A | 500~999자 | 충실한 정리 수준 | 90점 |
-| S | 1000자~ | 심화 학습 수준 | 100점 |
-
-### 피드백 5차원 출력
-
-```json
-{
-  "score": 45,
-  "grade": "C",
-  "summary": "노트 분량이 150자(C등급)로 기초 수준입니다...",
-  "concept_analysis": "세포분열 개념을 언급했으나 각 단계 설명이 없습니다...",
-  "learning_pattern": "챗봇에 15회 질문 중 생명과학이 8회로...",
-  "weak_areas": ["감수분열: 퀴즈 요청 3회, 노트에 미정리"],
-  "interest_areas": ["생명과학", "세포생물학"],
-  "strengths": ["핵심 키워드 위주로 간결하게 정리했습니다"],
-  "improvements": ["세포분열 각 단계를 표로 정리해보세요"],
-  "next_step": "지금 바로 '감수분열'의 4단계를 자신의 언어로..."
-}
+# 북마크 · 모델
+POST/DELETE /api/bookmarks/:id
+GET/POST/DELETE /api/models[/:id]
 ```
 
 ---
 
-## 5. 폴더 구조
+## 🗄️ 데이터베이스 스키마
 
+```sql
+users          (id, username, email, password, role, created_at)
+models         (id, title, description, url, subject, thumb, created_at)  -- data/models.json
+bookmarks      (id, user_id, model_id, created_at)
+notes          (id, user_id, title, content, subject, tags, created_at, updated_at)
+chat_logs      (id, user_id, message, subject, with_quiz, created_at)
+note_feedbacks (id, note_id, user_id, feedback, summary, concept_analysis,
+                learning_pattern, next_step, strengths, improvements,
+                weak_areas, interest_areas, score, grade, created_at)
+note_generation_jobs (id, user_id, model_ids, status, result_note_id,
+                      error_msg, ai_used, priority, created_at, updated_at)
 ```
-ICT-Innovation-Project-Competition/
-│
-├── index.js                 # Express 메인 서버
-├── db.js                    # SQLite 연결 + 마이그레이션
-├── aiNoteService.js         # AI 노트 핵심 서비스
-├── semantic_search.py       # Python AI 서버 (FastAPI)
-├── start-ai-server.js       # Python 서버 실행 스크립트
-├── start-all.bat            # Windows 원클릭 실행
-├── requirements.txt         # Python 패키지 목록
-│
-├── routes/
-│   ├── aiNotes.js           # AI 노트 API (6개 엔드포인트)
-│   ├── bookmarks.js         # 북마크 API
-│   └── models_file.js       # 3D 모델 파일 API
-│
-├── sql/                     # DB 마이그레이션 (순서대로 실행)
-│   ├── 001_init.sql
-│   ├── 002_auth.sql
-│   ├── 003_models.sql
-│   ├── 004_bookmarks.sql
-│   └── 005_ai_notes.sql     # AI 노트 관련 테이블
-│
-├── public/                  # 정적 파일
-│   ├── intro.html           # 메인 (3D 모델 탐색)
-│   ├── mypage.html          # 마이페이지 (노트 + 피드백)
-│   ├── admin.html           # 관리자
-│   ├── teacher.html         # 교사
-│   ├── chatbot.js           # 챗봇 프론트엔드
-│   └── chatbot.css
-│
-├── scripts/
-│   ├── db-migrate.js        # 마이그레이션 실행
-│   ├── make-admin.js        # 관리자 계정 생성
-│   └── db-check.js          # DB 상태 확인
-│
-└── data/                    # 런타임 데이터
-    ├── app.db               # SQLite DB
-    ├── models.json          # 3D 모델 메타데이터
-    └── categories.json
-```
+
+**AI 노트 품질 등급** — 글자 수 기반 F(~19자)/D/C/B/A/S(1000자~), 등급별 점수 상한을 두어 빈약한 노트에 높은 점수가 나가지 않도록 설계.
 
 ---
 
-## 6. 설치 및 실행 방법
+## 🚀 설치 및 실행
 
-### 사전 요구사항
-
-- **Node.js** 18 이상
-- **Python** 3.9 이상 (PATH 등록 필수)
-- **Anthropic API 키** (https://console.anthropic.com)
+**사전 요구사항** — Node.js 18+, Python 3.9+ (PATH 등록), Anthropic API 키
 
 ### Windows
-
 ```bash
-# 1. 저장소 클론
 git clone https://github.com/Sanduduck/ICT-Innovation-Project-Competition.git
 cd ICT-Innovation-Project-Competition
-
-# 2. 환경변수 설정
-copy .env.example .env
-# .env 파일을 메모장으로 열고 ANTHROPIC_API_KEY 입력
-
-# 3. DB 초기화 (최초 1회)
-node scripts/db-migrate.js
-
-# 4. 원클릭 실행
-start-all.bat
+copy .env.example .env         # ANTHROPIC_API_KEY 입력
+node scripts/db-migrate.js     # DB 초기화 (최초 1회)
+start-all.bat                  # 원클릭 실행
 ```
 
 ### Mac / Linux
-
 ```bash
-# 1. 저장소 클론
 git clone https://github.com/Sanduduck/ICT-Innovation-Project-Competition.git
 cd ICT-Innovation-Project-Competition
-
-# 2. Node.js 패키지 설치
 npm install
-
-# 3. Python 가상환경
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-
-# 4. 환경변수 설정
-cp .env.example .env
-# ANTHROPIC_API_KEY 입력
-
-# 5. DB 초기화
+cp .env.example .env           # ANTHROPIC_API_KEY 입력
 node scripts/db-migrate.js
-
-# 6. 서버 실행 (터미널 2개)
-npm run ai    # AI 서버 (8000번)
-npm start     # Express (3000번)
+npm run ai &                   # AI 서버 (:8000)
+npm start                      # Express (:3000)
 ```
-
-### 접속 URL
 
 | 서비스 | URL |
-|--------|-----|
-| 메인 페이지 | http://localhost:3000 |
+| --- | --- |
+| 메인 | http://localhost:3000 |
 | 마이페이지 | http://localhost:3000/mypage.html |
 | 관리자 | http://localhost:3000/admin |
-| AI 서버 Swagger | http://localhost:8000/docs |
-
-### 관리자 계정 생성
-
-```bash
-node scripts/make-admin.js
-```
+| AI Swagger | http://localhost:8000/docs |
 
 ---
 
-## 7. API 명세
+## 🔧 트러블슈팅
 
-### 인증
-```
-POST /api/auth/register    회원가입
-POST /api/auth/login       로그인 (쿠키 발급)
-POST /api/auth/logout      로그아웃
-GET  /api/auth/whoami      현재 로그인 사용자 정보
-```
+<details>
+<summary><b>자주 발생하는 오류</b></summary>
 
-### 챗봇
-```
-POST /api/chat
-Body: { message: string, subject: string, withQuiz: boolean }
-Response: { answer: string, model: string }
-```
-
-### AI 노트
-```
-POST /api/notes/generate           AI 노트 즉시 생성
-POST /api/notes/generate/async     큐에 등록 후 jobId 반환
-GET  /api/notes/jobs/:jobId        작업 상태 폴링
-GET  /api/notes/stats              학습 통계
-GET  /api/notes/feedback-history   피드백 이력
-POST /api/notes/:id/feedback       AI 심층 피드백 생성
-```
-
-### 노트 CRUD
-```
-GET    /api/notes          목록
-POST   /api/notes          생성
-PUT    /api/notes/:id      수정
-DELETE /api/notes/:id      삭제
-```
-
----
-
-## 8. 데이터베이스 스키마
-
-```sql
--- 사용자
-users (id, username, email, password, role, created_at)
-
--- 3D 모델
-models (id, title, description, url, subject, thumb, created_at)
-
--- 북마크
-bookmarks (id, user_id, model_id, created_at)
-
--- 학습 노트
-notes (id, user_id, title, content, subject, updated_at, tags, created_at)
-
--- 챗봇 질문 로그
-chat_logs (id, user_id, message, subject, with_quiz, created_at)
-
--- AI 피드백 (5차원 분석 결과)
-note_feedbacks (
-  id, note_id, user_id,
-  feedback, summary, concept_analysis, learning_pattern, next_step,
-  strengths, improvements, weak_areas, interest_areas,
-  score, grade, created_at
-)
-
--- 비동기 작업 큐
-note_generation_jobs (
-  id, user_id, model_ids,
-  status,          -- pending / processing / done / failed
-  result_note_id, error_msg, ai_used, priority,
-  created_at, updated_at
-)
-```
-
----
-
-## 9. 환경 변수
-
-```env
-# 필수: Anthropic API 키 (피드백 + 챗봇 폴백)
-ANTHROPIC_API_KEY=sk-ant-api03-...
-
-# 선택: Python AI 서버 주소 (기본값 사용 권장)
-# AI_SERVER=http://127.0.0.1:8000
-
-# 선택: Qwen 모델 변경
-# CHAT_MODEL_NAME=Qwen/Qwen2.5-0.5B-Instruct
-```
-
----
-
-## 10. 트러블슈팅
+<br>
 
 | 오류 | 원인 | 해결 |
-|------|------|------|
-| `SQLITE_IOERR` | DB 파일 없음 또는 손상 | `node scripts/db-migrate.js` 실행 |
+| --- | --- | --- |
+| `SQLITE_IOERR` | DB 파일 없음/손상 | `node scripts/db-migrate.js` 실행 |
 | `'pip'은 내부 명령어가 아닙니다` | pip이 PATH에 없음 | `python -m pip install -r requirements.txt` |
 | `npm run ai exited with code 1` | `reload=True` Windows 충돌 | `semantic_search.py`에서 `reload=False`로 변경 |
 | AI 피드백이 노트 내용 반복 | Qwen 소형 모델 한계 | `.env`에 `ANTHROPIC_API_KEY` 설정 |
-| 챗봇 503 오류 | AI 서버 + Anthropic 모두 실패 | `npm run ai` 실행 후 API 키 확인 |
+| 챗봇 503 | AI 서버 + Anthropic 모두 실패 | `npm run ai` 실행 후 API 키 확인 |
 
----
+> **`reload=False` 이유** — Windows에서 `reload=True`는 멀티프로세스가 필요한데, Node.js 자식 프로세스로 실행 시 즉시 종료되는 문제가 있어 비활성화했습니다.
 
-*최종 업데이트: 2026년 5월*
+</details>
